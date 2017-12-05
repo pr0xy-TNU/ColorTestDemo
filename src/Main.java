@@ -2,9 +2,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
-    /*enum Type {
-        G, B, R
-    }*/
+
     enum Type {
         R, G, B
     }
@@ -37,15 +35,15 @@ public class Main {
             if (this.color == o.color) {
                 return 0;
             } else if (this.color == Type.G) {
-                return 1;
+                return -1;
             } else if (this.color == Type.B) {
                 if (o.color == Type.G) {
-                    return -1;
-                }else {
                     return 1;
+                } else {
+                    return -1;
                 }
             }
-            return -1;
+            return 1;
         }
     }
 
@@ -75,6 +73,7 @@ public class Main {
             }
         }
         info(ins.getClass().getCanonicalName(), r, g, b);
+
     }
 
     public static void checkRGB(Map<Integer, Color> ins) {
@@ -97,8 +96,8 @@ public class Main {
     public static void main(String[] args) {
         colorSet = new HashSet<>();
         colorList = new ArrayList<>();
-        colorList.forEach(v-> System.out.println(v.color));
-        for (int i = 0; i < 10; i++) {
+        colorList.forEach(v -> System.out.println(v.color));
+        for (int i = 0; i < 50; i++) {
             colorList.add(new Color(getRandomColorName()));
             colorSet.add(new Color(getRandomColorName()));
         }
@@ -109,6 +108,8 @@ public class Main {
         Collections.sort(colorList);
         System.out.println("After");
         colorList.forEach(v -> System.out.printf("%s ", v.color));
+        System.out.println();
+        checkRGB(colorList);
 
     }
 }
