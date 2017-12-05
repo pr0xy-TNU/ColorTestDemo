@@ -1,55 +1,60 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
+    /*enum Type {
+        G, B, R
+    }*/
+    enum Type {
+        R, G, B
+    }
 
-    public static class Color {
-        private String colorName;
 
-        public void setColorName(String colorName) {
-            this.colorName = colorName;
-        }
-
-        public String getColorName() {
-
-            return colorName;
-        }
-
-        public Color(String colorName) {
-
-            this.colorName = colorName;
-        }
+    public static class Color implements Comparable<Color> {
+        Type color;
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj == this)
-                return true;
-            if (obj == null || obj.getClass() != this.getClass())
-                return false;
-            Color guest = (Color) obj;
-            return colorName == guest.getColorName()
-                    || (colorName != null && (colorName.equals(guest.getColorName())));
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Color color1 = (Color) o;
+            return color == color1.color;
         }
 
         @Override
         public int hashCode() {
-            int prime = 24;
-            int result = 1;
-            result = prime * result + (colorName == null ? 0 : colorName.hashCode());
-            return result;
+
+            return Objects.hash(color);
+        }
+
+        public Color(Type color) {
+
+            this.color = color;
+        }
+
+        @Override
+        public int compareTo(Color o) {
+            if (this.color == o.color) {
+                return 0;
+            } else if (this.color == Type.G) {
+                return 1;
+            } else if (this.color == Type.B) {
+                if (o.color == Type.G) {
+                    return -1;
+                }else {
+                    return 1;
+                }
+            }
+            return -1;
         }
     }
 
     public static Set<Color> colorSet;
-    public static Map<Integer, Color> colorMap;
+    //public static Map<Integer, Color> colorMap;
     public static List<Color> colorList;
 
     public static final Random rand = new Random();
-    public static final String[] colorsName = {"R", "G", "B"};
-    public static final Color[] colorsInstance = new Color[]{
-            new Color("R"),
-            new Color("G"),
-            new Color("B")
-    };
+
 
     public static void checkRGB(Collection<Color> ins) {
         Iterator<Color> iterator = ins.iterator();
@@ -57,67 +62,53 @@ public class Main {
         int r = 0, g = 0, b = 0;
         while (iterator.hasNext()) {
             temp = iterator.next();
-            if (temp.equals(colorsInstance[0])) r++;
-            if (temp.equals(colorsInstance[1])) g++;
-            if (temp.equals(colorsInstance[2])) b++;
+            switch (temp.color) {
+                case R:
+                    r++;
+                    break;
+                case G:
+                    g++;
+                    break;
+                case B:
+                    b++;
+                    break;
+            }
         }
         info(ins.getClass().getCanonicalName(), r, g, b);
     }
 
     public static void checkRGB(Map<Integer, Color> ins) {
-        int r = 0, g = 0, b = 0;
-        for (Map.Entry<Integer, Color> pair : ins.entrySet()) {
-            if (pair.getValue().equals(colorsInstance[0])) r++;
-            if (pair.getValue().equals(colorsInstance[1])) g++;
-            if (pair.getValue().equals(colorsInstance[2])) b++;
+        if (ins != null) {
+            checkRGB(ins.values());
         }
-        info(ins.getClass().getCanonicalName(), r, g, b);
+
     }
 
-    public static String getRandomColorName() {
-        return colorsName[rand.nextInt(3)];
+    public static Type getRandomColorName() {
+        //return colorsName[rand.nextInt(3)];
+        return Type.values()[rand.nextInt(3)];
     }
 
     public static void info(String storageType, int r, int g, int b) {
         System.out.printf("Storage type: %s\nR:%d\tG:%d\tB:%d\n\n", storageType, r, g, b);
     }
 
-    public static void test1() {
-        System.out.println("test1");
-        colorSet = new HashSet<>();
-        colorList = new ArrayList<>();
-        colorMap = new HashMap<>();
-        for (int i = 0; i < 100; i++) {
-            colorList.add(new Color(getRandomColorName()));
-            colorMap.put(i, new Color(getRandomColorName()));
-            colorSet.add(new Color(getRandomColorName()));
-        }
-        checkRGB(colorList);
-        checkRGB(colorSet);
-        checkRGB(colorMap);
-        System.out.println();
-    }
-
-    public static void test2() {
-        System.out.println("test2");
-        colorSet = new HashSet<>();
-        colorList = new ArrayList<>();
-        colorMap = new HashMap<>();
-        Color temp;
-        for (int i = 0; i < 100; i++) {
-            temp = new Color(getRandomColorName());
-            colorList.add(temp);
-            colorSet.add(temp);
-            colorMap.put(i, temp);
-        }
-        checkRGB(colorList);
-        checkRGB(colorSet);
-        checkRGB(colorMap);
-        System.out.println();
-    }
 
     public static void main(String[] args) {
-        test1();
-        test2();
+        colorSet = new HashSet<>();
+        colorList = new ArrayList<>();
+        colorList.forEach(v-> System.out.println(v.color));
+        for (int i = 0; i < 10; i++) {
+            colorList.add(new Color(getRandomColorName()));
+            colorSet.add(new Color(getRandomColorName()));
+        }
+
+        System.out.println("Before");
+        colorList.forEach(v -> System.out.printf("%s ", v.color));
+        System.out.println();
+        Collections.sort(colorList);
+        System.out.println("After");
+        colorList.forEach(v -> System.out.printf("%s ", v.color));
+
     }
 }
